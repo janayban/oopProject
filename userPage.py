@@ -26,7 +26,7 @@ class UserUI:
         contentFrame = tk.Frame(self.userPage, bg="#54742C", padx=20, pady=20)  # Darker background (swapped)
 
         # Create a frame for the title with a lighter background color
-        titleFrame = tk.Frame(contentFrame, bg="#DADBB1", height=100)  # Lighter background (swapped)
+        titleFrame = tk.Frame(self.userPage, bg="#DADBB1", height=100)  # Lighter background (swapped)
 
         # Add title label inside the colored frame
         titleLabel = tk.Label(
@@ -83,7 +83,7 @@ class UserUI:
 
 
         # Layout configuration
-        contentFrame.grid(row=0, column=0, sticky="nsew")
+        contentFrame.grid(row=1, column=0, sticky="nsew")
 
         # Title Frame
         titleFrame.grid(row=0, column=0, columnspan=4, pady=(0, 20), sticky="nsew")
