@@ -36,14 +36,18 @@ class LoginSignUp:
         frame = tk.Frame(self.root, bg="#4f4f4f", padx=20, pady=20)
 
         usernameLabel = tk.Label(frame, text="Username", font=("Arial", 12), bg="#4f4f4f", fg="#ecf0f1")
-        self.usernameLoginEntry = tk.Entry(frame, font=("Arial", 12), bg="#ecf0f1", fg="#3b3b3b", borderwidth=2, relief="groove")
+        self.usernameLoginEntry = tk.Entry(frame, font=("Arial", 12), bg="#ecf0f1", fg="#3b3b3b", borderwidth=2,
+                                           relief="groove")
 
         passwordLabel = tk.Label(frame, text="Password", font=("Arial", 12), bg="#4f4f4f", fg="#ecf0f1")
-        self.passwordLoginEntry = tk.Entry(frame, font=("Arial", 12), bg="#ecf0f1", fg="#3b3b3b", borderwidth=2, relief="groove", show="*")
+        self.passwordLoginEntry = tk.Entry(frame, font=("Arial", 12), bg="#ecf0f1", fg="#3b3b3b", borderwidth=2,
+                                           relief="groove", show="*")
 
-        loginButton = tk.Button(self.root, text="Login", font=("Arial", 12), bg="#5a5a5a", fg="white", activebackground="#4b4b4b", command=self.login)
+        loginButton = tk.Button(self.root, text="Login", font=("Arial", 12), bg="#5a5a5a", fg="white",
+                                activebackground="#4b4b4b", command=self.login)
 
-        noAccountButton = tk.Button(self.root, text="Don't have an account? Sign up", font=("Arial", 10), bg="#3b3b3b", fg="#a0c4ff", activebackground="#3b3b3b", bd=0, command=self.signupUI)
+        noAccountButton = tk.Button(self.root, text="Don't have an account? Sign up", font=("Arial", 10), bg="#3b3b3b",
+                                    fg="#a0c4ff", activebackground="#3b3b3b", bd=0, command=self.signupUI)
 
         # Displaying the widgets
         loginLabel.pack(pady=20)
@@ -64,17 +68,22 @@ class LoginSignUp:
         frame = tk.Frame(self.root, bg="#4f4f4f", padx=20, pady=20)
 
         usernameLabel = tk.Label(frame, text="Username", font=("Arial", 12), bg="#4f4f4f", fg="#ecf0f1")
-        self.usernameSignupEntry = tk.Entry(frame, font=("Arial", 12), bg="#ecf0f1", fg="#3b3b3b", borderwidth=2, relief="groove")
+        self.usernameSignupEntry = tk.Entry(frame, font=("Arial", 12), bg="#ecf0f1", fg="#3b3b3b", borderwidth=2,
+                                            relief="groove")
 
         passwordLabel = tk.Label(frame, text="Password", font=("Arial", 12), bg="#4f4f4f", fg="#ecf0f1")
-        self.passwordSignupEntry = tk.Entry(frame, font=("Arial", 12), bg="#ecf0f1", fg="#3b3b3b", borderwidth=2, relief="groove", show="*")
+        self.passwordSignupEntry = tk.Entry(frame, font=("Arial", 12), bg="#ecf0f1", fg="#3b3b3b", borderwidth=2,
+                                            relief="groove", show="*")
 
         confirmPasswordLabel = tk.Label(frame, text="Confirm Password", font=("Arial", 12), bg="#4f4f4f", fg="#ecf0f1")
-        self.confirmPasswordEntry = tk.Entry(frame, font=("Arial", 12), bg="#ecf0f1", fg="#3b3b3b", borderwidth=2, relief="groove", show="*")
+        self.confirmPasswordEntry = tk.Entry(frame, font=("Arial", 12), bg="#ecf0f1", fg="#3b3b3b", borderwidth=2,
+                                             relief="groove", show="*")
 
-        signupButton = tk.Button(self.root, text="Sign Up", font=("Arial", 12), bg="#5a5a5a", fg="white", activebackground="#4b4b4b", command=self.signup)
+        signupButton = tk.Button(self.root, text="Sign Up", font=("Arial", 12), bg="#5a5a5a", fg="white",
+                                 activebackground="#4b4b4b", command=self.signup)
 
-        haveAccountButton = tk.Button(self.root, text="Already have an account? Log in", font=("Arial", 10), bg="#3b3b3b", fg="#a0c4ff", activebackground="#3b3b3b", bd=0, command=self.loginUI)
+        haveAccountButton = tk.Button(self.root, text="Already have an account? Log in", font=("Arial", 10),
+                                      bg="#3b3b3b", fg="#a0c4ff", activebackground="#3b3b3b", bd=0, command=self.loginUI)
 
         # Display the widgets
         signupLabel.pack(pady=20)
@@ -118,12 +127,6 @@ class LoginSignUp:
                     # Goes to User's UI
                     userPage.UserUI(self.root, username)
 
-                    # userPage = tk.Toplevel(self.root)
-                    # userPage.configure(bg='white')
-                    # userPage.title(f"{username} Dashboard")
-                    # userPage.geometry("1000x700+280+70")
-                    # userLabel = tk.Label(userPage, text="User Dashboard", bg='white', font=("Arial", 16))
-                    # userLabel.pack(pady=20)
             else:
                 messagebox.showerror("Login Failed", "Invalid credentials, please try again.")
         else:
