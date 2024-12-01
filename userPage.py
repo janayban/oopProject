@@ -9,7 +9,7 @@ import mysql.connector as mc
 class UserUI:
     def __init__(self, root, username):
         self.userPage = tk.Toplevel(root)
-        self.userPage.configure(bg='#3b3b3b')
+        self.userPage.configure(bg="#54742C")
         self.userPage.title(f"{username} Appointment Form")
         self.userPage.geometry("990x500+280+70")
         self.userPage.resizable(False, False)
@@ -23,21 +23,21 @@ class UserUI:
 
     def userUIContent(self):
         # Main frame with a darker background color
-        contentFrame = tk.Frame(self.userPage, bg="#3b3b3b", padx=20, pady=20)  # Darker background (swapped)
+        contentFrame = tk.Frame(self.userPage, bg="#54742C", padx=20, pady=20)  # Darker background (swapped)
 
         # Create a frame for the title with a lighter background color
-        titleFrame = tk.Frame(contentFrame, bg="#f0f0f0", height=100)  # Lighter background (swapped)
+        titleFrame = tk.Frame(contentFrame, bg="#DADBB1", height=100)  # Lighter background (swapped)
 
         # Add title label inside the colored frame
         titleLabel = tk.Label(
             titleFrame,
             text="ORAS: Office of the Registrar Appointment System",
-            font=("Bahnschrift", 16, "bold"),
-            bg="#f0f0f0",  # Match the new frame background color
+            font=("Verdana", 16, "bold"),
+            bg="#DADBB1",  # Match the new frame background color
             fg="#000000"   # Black text color
         )
 
-        # Add widgets with modern styles
+        #Initializing the widgets
         studNumLabel = tk.Label(contentFrame, text="Student Number:", font=self.font, bg=self.bg, fg=self.fg)
         self.studNumEntry = tk.Entry(contentFrame, width=30)
 
@@ -66,7 +66,7 @@ class UserUI:
         self.sectionEntry = tk.Entry(contentFrame, width=30)
 
         self.othersLabel = tk.Label(contentFrame, text="Others:", font=self.font, bg=self.bg, fg=self.fg,
-                               state="disabled")
+                               disabledforeground="#3b3b3b" , state="disabled")
         self.othersEntry = tk.Text(contentFrame, height=2, width=25, state="disabled")
 
         timeLabel = tk.Label(contentFrame, text="Select Time:", font=self.font, bg=self.bg, fg=self.fg)
@@ -74,10 +74,13 @@ class UserUI:
         self.timeOptions = [time for time in self.timeOptions if time != "12:00" and time != "12:30"]
         self.timePicker = ttk.Combobox(contentFrame, values=self.timeOptions, width=10, state="readonly")
 
-        # Adding "Clear" and "Submit" buttons next to each other
-        buttonFrame = tk.Frame(contentFrame, bg=self.bg)
-        self.clearButton = tk.Button(buttonFrame, text="Clear", width=15, command=self.clearForm)
-        self.submitButton = tk.Button(buttonFrame, text="Submit", width=15, command=self.submitData)
+
+        #buttonFrame = tk.Frame(contentFrame, bg=self.bg)
+        self.clearButton = tk.Button(contentFrame, text="Clear", width=15, activebackground="#DADBB1",
+                                     command=self.clearForm)
+        self.submitButton = tk.Button(contentFrame, text="Submit", width=15, activebackground="#DADBB1",
+                                      command=self.submitData)
+
 
         # Layout configuration
         contentFrame.grid(row=0, column=0, sticky="nsew")
@@ -89,7 +92,7 @@ class UserUI:
         titleFrame.grid_rowconfigure(0, weight=1)
         titleFrame.grid_columnconfigure(0, weight=1)
 
-        # Widgets Grid Placement
+        # Displaying Widgets using Grid Placement
         studNumLabel.grid(row=1, column=0, padx=10, pady=10, sticky="w")
         self.studNumEntry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 
@@ -115,9 +118,9 @@ class UserUI:
         self.timePicker.grid(row=4, column=3, padx=10, pady=10, sticky="w")
 
         # Button Frame Layout
-        buttonFrame.grid(row=5, column=1, columnspan=2, pady=20, sticky="e")
-        self.clearButton.grid(row=0, column=0, padx=(0, 20), pady=10, sticky="e")
-        self.submitButton.grid(row=0, column=1, padx=(20, 0), pady=10, sticky="e")
+        # buttonFrame.grid(row=5, column=1, columnspan=3, pady=20, sticky="nsew")
+        self.clearButton.grid(row=5, column=1, padx=(10, 10), pady=35)
+        self.submitButton.grid(row=5, column=2, columnspan=2, padx=(20, 10), pady=35, sticky="w")
 
     def pickDate(self, event):
         dateWindow = tk.Toplevel(self.userPage)
