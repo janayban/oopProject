@@ -2,10 +2,9 @@ import tkinter as tk
 from tkinter import messagebox
 import mysql.connector as mc
 import hashlib as hash
-import adminPage
+from project_files import adminPage
 import userPage
 import style
-from style import accFrameColor
 
 connect = mc.connect(host='localhost', database='oras_trial', user='root', password='')
 cursor = connect.cursor()
@@ -52,7 +51,7 @@ class LoginSignUp:
                                 activebackground=style.accFrameColor, command=self.login)
 
         noAccountButton = tk.Button(self.root, text="Don't have an account? Sign up", font=("Arial", 10),
-                                    bg=style.accBgColor,fg="#94daff", activebackground=style.accBgColor,
+                                    bg=style.accBgColor, fg="#94daff", activebackground=style.accBgColor,
                                     bd=0, command=self.signupUI)
 
         # Displaying the widgets

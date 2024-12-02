@@ -1,6 +1,5 @@
 import tkinter as tk
-import loginSignup as logSign
-
+from project_files import loginSignup as logSign
 
 # Main Activity
 root = tk.Tk()
