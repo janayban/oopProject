@@ -3,7 +3,6 @@ from tkinter import ttk
 from tkinter import messagebox
 import mysql.connector as mc
 import style
-import cv2
 
 class AdminUI:
     def __init__(self, root):
@@ -38,8 +37,8 @@ class AdminUI:
         )
 
         # Define style for the Treeview headings
-        treeview_style = ttk.Style()
-        treeview_style.configure(
+        treeviewStyle = ttk.Style()
+        treeviewStyle.configure(
             "Treeview.Heading",
             foreground="black",
             font=("Arial", 10, "bold")
@@ -68,28 +67,28 @@ class AdminUI:
         self.tree.column("status", width=150, anchor="center")
 
         # Create a custom style to add row padding
-        treeview_style.configure("Treeview", rowheight=30)
+        treeviewStyle.configure("Treeview", rowheight=30)
 
         # Scrollbars for the Treeview
-        tree_scroll_y = ttk.Scrollbar(contentFrame, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscrollcommand=tree_scroll_y.set)
+        treeScrollY = ttk.Scrollbar(contentFrame, orient="vertical", command=self.tree.yview)
+        self.tree.configure(yscrollcommand=treeScrollY.set)
 
         # Search Bar
         searchFrame = tk.Frame(self.adminPage, bg="#DADBB1", pady=10)
         searchLabel = tk.Label(searchFrame, text="Search by Student Number:", font=("Arial", 12), bg="#DADBB1")
         self.searchEntry = ttk.Entry(searchFrame, width=30)
         searchButton = ttk.Button(searchFrame, text="Search",
-                                  command=lambda: self.search_student())
+                                  command=lambda: self.searchStudent())
         deleteButton = ttk.Button(searchFrame, text="Delete Selected Record",
-                                  command=lambda: self.delete_selected())
-        deleteAllButton = ttk.Button(searchFrame, text="Delete All Records", command=self.delete_all_records)
-        showAllButton = ttk.Button(searchFrame, text="Show All Records", command=self.load_data)
+                                  command=lambda: self.deleteSelected())
+        deleteAllButton = ttk.Button(searchFrame, text="Delete All Records", command=self.deleteAllRecords)
+        showAllButton = ttk.Button(searchFrame, text="Show All Records", command=self.loadData)
 
         # QR Scanner Button
         qrScanButton = ttk.Button(searchFrame, text="Scan QR Code") #command=self.open_qr_scanner_window
 
         # Fetch data from the database
-        self.load_data()
+        self.loadData()
 
         # Add custom styles for row spacing effect
         self.tree.tag_configure("evenrow", background="#F0F0F0")
@@ -117,16 +116,16 @@ class AdminUI:
         # Add Treeview and scrollbars to contentFrame
         contentFrame.grid(row=2, column=0, sticky="nsew", padx=10, pady=(0, 10))
         self.tree.grid(row=0, column=0, sticky="nsew")
-        tree_scroll_y.grid(row=0, column=1, sticky="ns")
+        treeScrollY.grid(row=0, column=1, sticky="ns")
 
         # Adjust layout of contentFrame
         contentFrame.grid_columnconfigure(0, weight=1)
         contentFrame.grid_rowconfigure(0, weight=1)
 
         # Bind double-click event to the Treeview
-        self.tree.bind("<Double-1>", lambda event: self.on_treeview_double_click(event, self.tree, contentFrame))
+        self.tree.bind("<Double-1>", lambda event: self.OnTreeViewDoubleClick(event, self.tree, contentFrame))
 
-    def on_treeview_double_click(self, event, tree, contentFrame):
+    def OnTreeViewDoubleClick(self, event, tree, contentFrame):
         # Identify the selected item and column
         item = tree.identify_row(event.y)
         column = tree.identify_column(event.x)
@@ -146,7 +145,7 @@ class AdminUI:
             bbox = tree.bbox(item, column)
             entry.place(x=bbox[0], y=bbox[1], width=bbox[2], height=bbox[3])
 
-            def save_status():
+            def saveStatus():
                 # Unbind events to ensure the function doesn't get triggered twice
                 entry.unbind("<Return>")
                 entry.unbind("<FocusOut>")
@@ -185,10 +184,10 @@ class AdminUI:
                 entry.destroy()
 
             # Bind events to the Entry widget
-            entry.bind("<Return>", lambda _: save_status())
-            entry.bind("<FocusOut>", lambda _: save_status())
+            entry.bind("<Return>", lambda _: saveStatus())
+            entry.bind("<FocusOut>", lambda _: saveStatus())
 
-    def load_data(self):
+    def loadData(self):
         # Fetch data from the database and populate the Treeview
         try:
             connection = mc.connect(
@@ -212,7 +211,7 @@ class AdminUI:
         except mc.Error as e:
             messagebox.showerror("Database Error", f"An error occurred while fetching data: {e}")
 
-    def search_student(self):
+    def searchStudent(self):
         student_number = self.searchEntry.get()
 
         if not student_number:
@@ -243,7 +242,7 @@ class AdminUI:
 
             else:
                 messagebox.showinfo("No Results", f"No record found for student number {student_number}.")
-                self.load_data()  # Reload all records
+                self.loadData()  # Reload all records
 
             cursor.close()
             connection.close()
@@ -251,7 +250,7 @@ class AdminUI:
         except mc.Error as e:
             messagebox.showerror("Database Error", f"An error occurred during search: {e}")
 
-    def delete_selected(self):
+    def deleteSelected(self):
         # Delete the selected record
         selected_item = self.tree.selection()
         if selected_item:
@@ -282,7 +281,7 @@ class AdminUI:
     import mysql.connector as mc
     from tkinter import messagebox
 
-    def delete_all_records(self):
+    def deleteAllRecords(self):
         # Delete all records from the database
         if messagebox.askyesno("Confirm Delete",
                                "Are you sure you want to delete all records? This action cannot be undone."):
