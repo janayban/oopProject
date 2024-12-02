@@ -2,8 +2,11 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from tkcalendar import Calendar
-from project_files import style
+import style
 import mysql.connector as mc
+
+import qrcode
+from PIL import ImageTk
 
 
 class UserUI:
@@ -198,7 +201,6 @@ class UserUI:
             self.othersLabel.config(state="disabled")  # Disable entry
             self.othersEntry.config(state="disabled")  # Disable entry
 
-
     def submitData(self):
         # Get values from the form
         student_number = self.studNumEntry.get()
@@ -246,6 +248,9 @@ class UserUI:
             # Success message
             messagebox.showinfo("Success", "Data submitted successfully!")
 
+            # Generate and display the QR code in a new window
+            self.generateQRCode(student_number)
+
             # Clear form after submission
             self.clearForm()
 
@@ -255,6 +260,37 @@ class UserUI:
             if connect.is_connected():
                 cursor.close()
                 connect.close()
+
+    def generateQRCode(self, student_number):
+        # Generate QR code from the student number
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=10,
+            border=4,
+        )
+        qr.add_data(student_number)
+        qr.make(fit=True)
+
+        # Create an image from the QR code
+        img = qr.make_image(fill="black", back_color="white")
+
+        # Convert to a format that can be used in tkinter
+        img_tk = ImageTk.PhotoImage(img)
+
+        # Create a new window to display the QR code
+        qr_window = tk.Toplevel(self.userPage)  # New top-level window
+        qr_window.title("QR Code")
+        qr_window.geometry("300x300")  # Adjust the size as needed
+
+        # Label to display the QR code image
+        qr_label = tk.Label(qr_window, image=img_tk)
+        qr_label.image = img_tk  # Keep a reference to avoid garbage collection
+        qr_label.pack(padx=20, pady=20)
+
+        # Optionally, display the student number below the QR code
+        student_num_label = tk.Label(qr_window, text=f"Student Number: {student_number}")
+        student_num_label.pack()
 
     def clearForm(self):
         # Clear all form fields

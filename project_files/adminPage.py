@@ -3,7 +3,7 @@ from tkinter import ttk
 from tkinter import messagebox
 import mysql.connector as mc
 import style
-
+import cv2
 
 class AdminUI:
     def __init__(self, root):
@@ -85,6 +85,9 @@ class AdminUI:
         deleteAllButton = ttk.Button(searchFrame, text="Delete All Records", command=self.delete_all_records)
         showAllButton = ttk.Button(searchFrame, text="Show All Records", command=self.load_data)
 
+        # QR Scanner Button
+        qrScanButton = ttk.Button(searchFrame, text="Scan QR Code") #command=self.open_qr_scanner_window
+
         # Fetch data from the database
         self.load_data()
 
@@ -109,6 +112,7 @@ class AdminUI:
         deleteButton.grid(row=0, column=3, padx=10)
         deleteAllButton.grid(row=0, column=4, padx=10)
         showAllButton.grid(row=0, column=5, padx=10)
+        qrScanButton.grid(row=0, column=6, padx=10)
 
         # Add Treeview and scrollbars to contentFrame
         contentFrame.grid(row=2, column=0, sticky="nsew", padx=10, pady=(0, 10))
@@ -319,4 +323,3 @@ class AdminUI:
                 messagebox.showerror("Database Error", f"Failed to delete all records: {e}")
             except Exception as ex:
                 messagebox.showerror("Error", f"An unexpected error occurred: {ex}")
-
