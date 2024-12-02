@@ -226,8 +226,8 @@ class UserUI:
         try:
             connect = mc.connect(
                 host="localhost",
-                user="root",  # Replace with your MySQL username
-                password="",  # Replace with your MySQL password
+                user="root",
+                password="",
                 database="oras_trial"
             )
             cursor = connect.cursor()
