@@ -102,7 +102,7 @@ class AdminUI:
         titleLabel.pack(expand=True, fill="both")
 
         # Search Bar Frame
-        searchFrame.grid(row=1, column=0, sticky="ew", padx=10, pady=10)
+        searchFrame.grid(row=1, column=0, sticky="ew", padx=30, pady=10)
         searchLabel.grid(row=0, column=0, padx=5)
         self.searchEntry.grid(row=0, column=1, padx=5)
         searchButton.grid(row=0, column=2, padx=5)
