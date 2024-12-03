@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 import mysql.connector as mc
 import hashlib as hash
-from project_files import adminPage
+import adminPage
 import userPage
 import style
 

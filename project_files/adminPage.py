@@ -6,6 +6,7 @@ import style
 import cv2
 from pyzbar.pyzbar import decode
 
+
 class AdminUI:
     def __init__(self, root):
         self.adminPage = tk.Toplevel(root)
