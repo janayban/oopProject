@@ -5,7 +5,6 @@ import mysql.connector as mc
 import style
 import cv2
 from pyzbar.pyzbar import decode
-import time
 
 class AdminUI:
     def __init__(self, root):
