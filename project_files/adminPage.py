@@ -3,6 +3,9 @@ from tkinter import ttk
 from tkinter import messagebox
 import mysql.connector as mc
 import style
+import cv2
+from pyzbar.pyzbar import decode
+import time
 
 class AdminUI:
     def __init__(self, root):
@@ -85,7 +88,7 @@ class AdminUI:
         showAllButton = ttk.Button(searchFrame, text="Show All Records", command=self.loadData)
 
         # QR Scanner Button
-        qrScanButton = ttk.Button(searchFrame, text="Scan QR Code") #command=self.open_qr_scanner_window
+        qrScanButton = ttk.Button(searchFrame, text="Scan QR Code", command=self.qrScanner) #command=self.open_qr_scanner_window
 
         # Fetch data from the database
         self.loadData()
@@ -322,3 +325,48 @@ class AdminUI:
                 messagebox.showerror("Database Error", f"Failed to delete all records: {e}")
             except Exception as ex:
                 messagebox.showerror("Error", f"An unexpected error occurred: {ex}")
+
+    def qrScanner(self):
+        cam = cv2.VideoCapture(0)
+        cam.set(5, 640)
+        cam.set(6, 480)
+
+        camera = True
+
+        while camera:
+            success, frame = cam.read()
+            if not success:
+                break
+
+            # Decode the QR code(s) in the frame
+            for i in decode(frame):
+                scanned_value = i.data.decode("utf-8")
+
+                # Set the scanned QR code value in the search entry
+                self.searchEntry.delete(0, tk.END)  # Clear the existing text
+                self.searchEntry.insert(0, scanned_value)  # Insert the scanned value
+
+                # Automatically trigger the search function
+                self.searchStudent()
+
+                messagebox.showinfo("QR Code Scanned", "Scanned successfully!")
+
+                # Break after one scan to prevent continuous scanning
+                break
+
+            # Display the camera frame with QR code detection
+            cv2.imshow("QR_Code_Scanner", frame)
+
+            # Check for user closing the window (pressing "X")
+            key = cv2.waitKey(1) & 0xFF
+            if key == ord('q'):  # If the user presses 'q' (or any key you choose)
+                break
+
+            # Check if the window is closed by "X" button
+            if cv2.getWindowProperty("QR_Code_Scanner", cv2.WND_PROP_VISIBLE) < 1:
+                break
+
+        # Release resources and close window
+        cam.release()
+        cv2.destroyAllWindows()
+

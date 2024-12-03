@@ -289,8 +289,8 @@ class UserUI:
         qr_label.pack(padx=20, pady=20)
 
         # Optionally, display the student number below the QR code
-        student_num_label = tk.Label(qr_window, text=f"Student Number: {student_number}")
-        student_num_label.pack()
+        # student_num_label = tk.Label(qr_window, text=f"Student Number: {student_number}")
+        # student_num_label.pack()
 
     def clearForm(self):
         # Clear all form fields
