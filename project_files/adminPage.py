@@ -81,7 +81,7 @@ class AdminUI:
         searchLabel = tk.Label(searchFrame, text="Search by Student Number:", font=("Arial", 12), bg="#DADBB1")
         self.searchEntry = ttk.Entry(searchFrame, width=30)
         searchButton = ttk.Button(searchFrame, text="Search",
-                                  command=lambda: self.searchStudent())
+                                  command=self.searchStudent)
         deleteButton = ttk.Button(searchFrame, text="Delete Selected Record",
                                   command=lambda: self.deleteSelected())
         deleteAllButton = ttk.Button(searchFrame, text="Delete All Records", command=self.deleteAllRecords)
@@ -103,7 +103,7 @@ class AdminUI:
         self.adminPage.grid_rowconfigure(2, weight=1, minsize=200)  # Content frame takes up remaining space
 
         # Title Frame
-        titleFrame.grid(row=0, column=0, sticky="ew", ipady=15)
+        titleFrame.grid(row=0, column=0, sticky="ew", ipady=15, pady=(0, 5))
         titleLabel.pack(expand=True, fill="both")
 
         # Search Bar Frame
