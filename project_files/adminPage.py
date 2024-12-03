@@ -12,7 +12,6 @@ class AdminUI:
         self.adminPage = tk.Toplevel(root)
         self.adminPage.configure(bg="#54742C")
         self.adminPage.title("Admin Dashboard")
-        # self.adminPage.geometry("1500x800+45+70")
         self.adminPage.resizable(False, False)
         self.adminPage.tk.call('tk', 'scaling', 2.0)
 
@@ -24,13 +23,13 @@ class AdminUI:
         self.adminDashboardContent()
 
     def adminDashboardContent(self):
-        # Main frame for the content with a darker background color
+        # Frame where all the widgets below the title is placed
         contentFrame = tk.Frame(self.adminPage, bg="#54742C", padx=20, pady=10)
 
-        # Create a frame for the title with a lighter background color
+        # Frame where the title is placed
         titleFrame = tk.Frame(self.adminPage, bg="#DADBB1", height=100)
 
-        # Add title label inside the title frame
+        # Label placed within the title frame
         titleLabel = tk.Label(
             titleFrame,
             text="ORAS - Registrar's Appointment Records",
@@ -39,7 +38,7 @@ class AdminUI:
             fg="#000000"
         )
 
-        # Define style for the Treeview headings
+        # Style for treeview Headings
         treeviewStyle = ttk.Style()
         treeviewStyle.configure(
             "Treeview.Heading",
@@ -59,7 +58,7 @@ class AdminUI:
         self.tree.heading("time", text="Time")
         self.tree.heading("status", text="Status")
 
-        # Setting column widths
+        # Column widths
         self.tree.column("stud_num", width=170, anchor="center")
         self.tree.column("name", width=200, anchor="center")
         self.tree.column("course", width=150, anchor="center")
@@ -69,44 +68,43 @@ class AdminUI:
         self.tree.column("time", width=150, anchor="center")
         self.tree.column("status", width=150, anchor="center")
 
-        # Create a custom style to add row padding
+        # Row height spacing
         treeviewStyle.configure("Treeview", rowheight=30)
 
-        # Scrollbars for the Treeview
+        # Scrollbar for the Treeview
         treeScrollY = ttk.Scrollbar(contentFrame, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscrollcommand=treeScrollY.set)
 
-        # Search Bar
+        # SearchFrame holds the search bar and different buttons
         searchFrame = tk.Frame(self.adminPage, bg="#DADBB1", pady=10)
+
         searchLabel = tk.Label(searchFrame, text="Search by Student Number:", font=("Arial", 12), bg="#DADBB1")
         self.searchEntry = ttk.Entry(searchFrame, width=30)
         searchButton = ttk.Button(searchFrame, text="Search",
                                   command=self.searchStudent)
         deleteButton = ttk.Button(searchFrame, text="Delete Selected Record",
-                                  command=lambda: self.deleteSelected())
+                                  command=self.deleteSelected)
         deleteAllButton = ttk.Button(searchFrame, text="Delete All Records", command=self.deleteAllRecords)
         showAllButton = ttk.Button(searchFrame, text="Show All Records", command=self.loadData)
-
-        # QR Scanner Button
-        qrScanButton = ttk.Button(searchFrame, text="Scan QR Code", command=self.qrScanner) #command=self.open_qr_scanner_window
+        qrScanButton = ttk.Button(searchFrame, text="Scan QR Code", command=self.qrScanner)
 
         # Fetch data from the database
         self.loadData()
 
-        # Add custom styles for row spacing effect
+        # Different colors for alternating rows
         self.tree.tag_configure("evenrow", background="#F0F0F0")
         self.tree.tag_configure("oddrow", background="#FFFFFF")
 
-        # Layout configuration for grid row
+        # Layout configuration for adminPage
         self.adminPage.grid_rowconfigure(0, weight=0)  # Title frame doesn't expand
         self.adminPage.grid_rowconfigure(1, weight=0)  # Search frame doesn't expand
         self.adminPage.grid_rowconfigure(2, weight=1, minsize=200)  # Content frame takes up remaining space
 
-        # Title Frame
+        # Title Frame display
         titleFrame.grid(row=0, column=0, sticky="ew", ipady=15, pady=(0, 5))
         titleLabel.pack(expand=True, fill="both")
 
-        # Search Bar Frame
+        # Search Bar Frame display
         searchFrame.grid(row=1, column=0, sticky="ew", padx=30, pady=10)
         searchLabel.grid(row=0, column=0, padx=5)
         self.searchEntry.grid(row=0, column=1, padx=5)
@@ -116,18 +114,20 @@ class AdminUI:
         showAllButton.grid(row=0, column=5, padx=10)
         qrScanButton.grid(row=0, column=6, padx=10)
 
-        # Add Treeview and scrollbars to contentFrame
+        # Display treeview and scrollbar to contentFrame
         contentFrame.grid(row=2, column=0, sticky="nsew", padx=10, pady=(0, 10))
         self.tree.grid(row=0, column=0, sticky="nsew")
         treeScrollY.grid(row=0, column=1, sticky="ns")
 
-        # Adjust layout of contentFrame
+        # Layout configuration of contentFrame
         contentFrame.grid_columnconfigure(0, weight=1)
         contentFrame.grid_rowconfigure(0, weight=1)
 
         # Bind double-click event to the Treeview
         self.tree.bind("<Double-1>", lambda event: self.OnTreeViewDoubleClick(event, self.tree, contentFrame))
 
+
+    # Function for Editing the "status" column
     def OnTreeViewDoubleClick(self, event, tree, contentFrame):
         # Identify the selected item and column
         item = tree.identify_row(event.y)
@@ -136,12 +136,12 @@ class AdminUI:
         # Check if the clicked column is the "status" column
         if column == "#8":
             # Get current values of the row
-            current_values = tree.item(item, "values")
-            current_status = current_values[7]
+            currentValues = tree.item(item, "values")
+            currentStatus = currentValues[7]
 
             # Create an Entry widget for editing
             entry = ttk.Entry(contentFrame)
-            entry.insert(0, current_status)
+            entry.insert(0, currentStatus)
             entry.focus()
 
             # Position the Entry widget over the cell
@@ -149,17 +149,16 @@ class AdminUI:
             entry.place(x=bbox[0], y=bbox[1], width=bbox[2], height=bbox[3])
 
             def saveStatus():
-                # Unbind events to ensure the function doesn't get triggered twice
                 entry.unbind("<Return>")
                 entry.unbind("<FocusOut>")
 
                 # Get new status value
-                new_status = entry.get()
-                if new_status:
+                newStatus = entry.get()
+                if newStatus:
                     # Update the Treeview
-                    new_values = list(current_values)
-                    new_values[7] = new_status
-                    tree.item(item, values=new_values)
+                    newValues = list(currentValues)
+                    newValues[7] = newStatus
+                    tree.item(item, values=newValues)
 
                     # Update the database
                     try:
@@ -172,7 +171,7 @@ class AdminUI:
                         cursor = connection.cursor()
                         cursor.execute(
                             "UPDATE user_input_forms SET status = %s WHERE stud_num = %s",
-                            (new_status, current_values[0])
+                            (newStatus, currentValues[0])
                         )
                         connection.commit()
                         cursor.close()
@@ -190,8 +189,9 @@ class AdminUI:
             entry.bind("<Return>", lambda _: saveStatus())
             entry.bind("<FocusOut>", lambda _: saveStatus())
 
+
+    # Method used to fetch all the data
     def loadData(self):
-        # Fetch data from the database and populate the Treeview
         try:
             connection = mc.connect(
                 host="localhost",
@@ -212,12 +212,14 @@ class AdminUI:
             cursor.close()
             connection.close()
         except mc.Error as e:
-            messagebox.showerror("Database Error", f"An error occurred while fetching data: {e}")
+            messagebox.showerror("Database Error", f"Error: {e}")
 
+    # Method used to search student by student number
     def searchStudent(self):
-        student_number = self.searchEntry.get()
+        # Get the student number value from Search Entry
+        studentNumber = self.searchEntry.get()
 
-        if not student_number:
+        if not studentNumber:
             messagebox.showwarning("Input Error", "Please enter a student number to search.")
             return
 
@@ -231,20 +233,19 @@ class AdminUI:
             )
             cursor = connection.cursor()
             query = "SELECT stud_num, name, course, section, appointment_type, date, time, status FROM user_input_forms WHERE stud_num = %s"
-            cursor.execute(query, (student_number,))
+            cursor.execute(query, (studentNumber,))
             rows = cursor.fetchall()
 
-            # Clear the tree view
             self.tree.delete(*self.tree.get_children())
 
             if rows:
-                # Display the result if found
+                # Display the result if found after iterating in the database
                 for index, row in enumerate(rows):
                     tag = "evenrow" if index % 2 == 0 else "oddrow"
                     self.tree.insert("", "end", values=row, tags=(tag,))
 
             else:
-                messagebox.showinfo("No Results", f"No record found for student number {student_number}.")
+                messagebox.showinfo("No Results", f"No record found for student number {studentNumber}.")
                 self.loadData()  # Reload all records
 
             cursor.close()
@@ -253,12 +254,12 @@ class AdminUI:
         except mc.Error as e:
             messagebox.showerror("Database Error", f"An error occurred during search: {e}")
 
+    # Function to delete a selected record
     def deleteSelected(self):
-        # Delete the selected record
-        selected_item = self.tree.selection()
-        if selected_item:
-            record = self.tree.item(selected_item)["values"]
-            student_number = record[0]
+        selectedItem = self.tree.selection()
+        if selectedItem:
+            record = self.tree.item(selectedItem)["values"]
+            studentNumber = record[0]
             if messagebox.askyesno("Confirm Delete",
                                    "Are you sure you want to delete this record? This action cannot be undone."):
 
@@ -270,20 +271,19 @@ class AdminUI:
                         database="oras_trial"
                     )
                     cursor = connection.cursor()
-                    cursor.execute("DELETE FROM user_input_forms WHERE stud_num = %s", (student_number,))
+                    cursor.execute("DELETE FROM user_input_forms WHERE stud_num = %s", (studentNumber,))
                     connection.commit()
                     cursor.close()
                     connection.close()
-                    self.tree.delete(selected_item)  # Remove the row from the Treeview
+                    self.tree.delete(selectedItem)  # Remove the row from the Treeview
                     messagebox.showinfo("Success", "Record deleted successfully.")
                 except mc.Error as e:
                     messagebox.showerror("Database Error", f"Failed to delete record: {e}")
         else:
             messagebox.showwarning("Selection Error", "Please select a record to delete.")
 
-    import mysql.connector as mc
-    from tkinter import messagebox
 
+    # Function to delete all records at once
     def deleteAllRecords(self):
         # Delete all records from the database
         if messagebox.askyesno("Confirm Delete",
@@ -301,9 +301,9 @@ class AdminUI:
 
                 # Check if there are any records in the table
                 cursor.execute("SELECT COUNT(*) FROM user_input_forms")
-                record_count = cursor.fetchone()[0]
+                recordCount = cursor.fetchone()[0]
 
-                if record_count == 0:
+                if recordCount == 0:
                     # If there are no records to delete, show a message and exit
                     messagebox.showinfo("No Records", "There are no records to delete.")
                 else:
@@ -326,6 +326,7 @@ class AdminUI:
             except Exception as ex:
                 messagebox.showerror("Error", f"An unexpected error occurred: {ex}")
 
+    # Function for QR Scanner
     def qrScanner(self):
         cam = cv2.VideoCapture(0)
         cam.set(5, 640)

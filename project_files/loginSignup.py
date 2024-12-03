@@ -6,8 +6,8 @@ import adminPage
 import userPage
 import style
 
-connect = mc.connect(host='localhost', database='oras_trial', user='root', password='')
-cursor = connect.cursor()
+connection = mc.connect(host='localhost', database='oras_trial', user='root', password='')
+cursor = connection.cursor()
 
 class LoginSignUp:
     def __init__(self, root):

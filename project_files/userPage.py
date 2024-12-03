@@ -4,7 +4,6 @@ from tkinter import messagebox
 from tkcalendar import Calendar
 import style
 import mysql.connector as mc
-
 import qrcode
 from PIL import ImageTk
 
@@ -155,8 +154,8 @@ class UserUI:
             # Connect to the MySQL database
             connect = mc.connect(
                 host="localhost",
-                user="root",  # Replace with your MySQL username
-                password="",  # Replace with your MySQL password
+                user="root",
+                password="",
                 database="oras_trial"
             )
             cursor = connect.cursor()
@@ -288,9 +287,6 @@ class UserUI:
         qr_label.image = img_tk  # Keep a reference to avoid garbage collection
         qr_label.pack(padx=20, pady=20)
 
-        # Optionally, display the student number below the QR code
-        # student_num_label = tk.Label(qr_window, text=f"Student Number: {student_number}")
-        # student_num_label.pack()
 
     def clearForm(self):
         # Clear all form fields
