@@ -6,16 +6,17 @@ import style
 import mysql.connector as mc
 import qrcode
 from PIL import ImageTk
+import loginSignup
 
 
 class UserUI:
     def __init__(self, root, username):
-        self.userPage = tk.Toplevel(root)
-        self.userPage.configure(bg="#54742C")
-        self.userPage.title(f"{username} Appointment Form")
-        self.userPage.geometry("990x500+280+70")
-        self.userPage.resizable(False, False)
-        self.userPage.tk.call('tk', 'scaling', 2.0)  # Doubles the default size
+        self.root = tk.Toplevel(root)
+        self.root.configure(bg="#54742C")
+        self.root.title(f"{username} Appointment Form")
+        self.root.geometry("990x500+280+70")
+        self.root.resizable(False, False)
+        self.root.tk.call('tk', 'scaling', 2.0)
         self.bg = style.labelBgColor
         self.fg = style.labelTextColor
         self.font = style.userFontLabel
@@ -23,23 +24,15 @@ class UserUI:
         # First method to be executed
         self.userUIContent()
 
+
+    # User Interface of Admin Window
     def userUIContent(self):
-        # Main frame with a darker background color
-        contentFrame = tk.Frame(self.userPage, bg="#54742C", padx=20, pady=20)  # Darker background (swapped)
+        # Initializing the widgets and frames
+        contentFrame = tk.Frame(self.root, bg="#54742C", padx=20, pady=20)  # Darker background (swapped)
+        titleFrame = tk.Frame(self.root, bg="#DADBB1", height=100)  # Lighter background (swapped)
+        titleLabel = tk.Label(titleFrame, text="ORAS: Office of the Registrar Appointment System",
+                              font=("Verdana", 16, "bold"), bg="#DADBB1", fg="#000000")
 
-        # Create a frame for the title with a lighter background color
-        titleFrame = tk.Frame(self.userPage, bg="#DADBB1", height=100)  # Lighter background (swapped)
-
-        # Add title label inside the colored frame
-        titleLabel = tk.Label(
-            titleFrame,
-            text="ORAS: Office of the Registrar Appointment System",
-            font=("Verdana", 16, "bold"),
-            bg="#DADBB1",  # Match the new frame background color
-            fg="#000000"   # Black text color
-        )
-
-        #Initializing the widgets
         studNumLabel = tk.Label(contentFrame, text="Student Number:", font=self.font, bg=self.bg, fg=self.fg)
         self.studNumEntry = tk.Entry(contentFrame, width=30)
 
@@ -62,7 +55,10 @@ class UserUI:
         self.dateEntry.bind("<1>", self.pickDate)
 
         courseLabel = tk.Label(contentFrame, text="Course:", font=self.font, bg=self.bg, fg=self.fg)
-        self.courseEntry = tk.Entry(contentFrame, width=30)
+        self.courseCheckBox = ttk.Combobox(contentFrame, values=["ACT", "BLIS", "BSCS", "BSIS", "BSA", "BSE", "BSTM",
+                                                                 "BAELS", "BPEd", "BSMath", "BSNE", "BSP", "BTVTED" ],
+                                                                  width=28, state="readonly")
+
 
         sectionLabel = tk.Label(contentFrame, text="Section:", font=self.font, bg=self.bg, fg=self.fg)
         self.sectionEntry = tk.Entry(contentFrame, width=30)
@@ -77,16 +73,17 @@ class UserUI:
         self.timePicker = ttk.Combobox(contentFrame, values=self.timeOptions, width=10, state="readonly")
 
 
-        #buttonFrame = tk.Frame(contentFrame, bg=self.bg)
         self.clearButton = tk.Button(contentFrame, text="Clear", width=15, activebackground="#DADBB1",
                                      command=self.clearForm)
         self.submitButton = tk.Button(contentFrame, text="Submit", width=15, activebackground="#DADBB1",
                                       command=self.submitData)
 
+        # Logout Button
+        logoutButton = tk.Button(contentFrame, text="Log out", font=("Arial", 8), bg=style.accFrameColor,
+                                 fg=style.accFgColor, activebackground=style.accFontColor, bd=0, command=self.logout)
 
-        # Layout configuration
-        contentFrame.grid(row=1, column=0, sticky="nsew")
 
+        # Displaying of widgets and frames
         # Title Frame
         titleFrame.grid(row=0, column=0, columnspan=4, pady=(0, 20), sticky="nsew")
         titleLabel.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
@@ -94,7 +91,9 @@ class UserUI:
         titleFrame.grid_rowconfigure(0, weight=1)
         titleFrame.grid_columnconfigure(0, weight=1)
 
-        # Displaying Widgets using Grid Placement
+        # Content Frame
+        contentFrame.grid(row=1, column=0, sticky="nsew")
+
         studNumLabel.grid(row=1, column=0, padx=10, pady=10, sticky="w")
         self.studNumEntry.grid(row=1, column=1, padx=10, pady=10, sticky="w")
 
@@ -108,7 +107,7 @@ class UserUI:
         self.dateEntry.grid(row=4, column=1, padx=10, pady=10, sticky="w")
 
         courseLabel.grid(row=1, column=2, padx=10, pady=10, sticky="w")
-        self.courseEntry.grid(row=1, column=3, padx=10, pady=10, sticky="w")
+        self.courseCheckBox.grid(row=1, column=3, padx=10, pady=10, sticky="w")
 
         sectionLabel.grid(row=2, column=2, padx=10, pady=10, sticky="w")
         self.sectionEntry.grid(row=2, column=3, padx=10, pady=10, sticky="w")
@@ -119,13 +118,15 @@ class UserUI:
         timeLabel.grid(row=4, column=2, padx=10, pady=10, sticky="w")
         self.timePicker.grid(row=4, column=3, padx=10, pady=10, sticky="w")
 
-        # Button Frame Layout
-        # buttonFrame.grid(row=5, column=1, columnspan=3, pady=20, sticky="nsew")
-        self.clearButton.grid(row=5, column=1, padx=(10, 10), pady=35)
-        self.submitButton.grid(row=5, column=2, columnspan=2, padx=(20, 10), pady=35, sticky="w")
+        self.clearButton.grid(row=5, column=1, padx=(10, 10), pady=(35,25))
+        self.submitButton.grid(row=5, column=2, columnspan=2, padx=(20, 10), pady=(35,25), sticky="w")
 
+        logoutButton.grid(row=6, column=3, sticky="e", padx=10)
+
+
+    # Method for Calendar
     def pickDate(self, event):
-        dateWindow = tk.Toplevel(self.userPage)
+        dateWindow = tk.Toplevel(self.root)
         dateWindow.grab_set()
         dateWindow.title("Select Appointment Date")
 
@@ -140,6 +141,8 @@ class UserUI:
         )
         submitButton.pack()
 
+
+    # Method for getting/displaying the date
     def grabDate(self, cal):
         # Update the dateEntry with the selected date
         selected_date = cal.get_date()
@@ -149,37 +152,27 @@ class UserUI:
         # Update time options based on database bookings for the selected date
         self.updateTimePicker(selected_date)
 
+
+    # Method for updating the time and removing when picked three times
     def updateTimePicker(self, selected_date):
         try:
             # Connect to the MySQL database
-            connect = mc.connect(
-                host="localhost",
-                user="root",
-                password="",
-                database="oras_trial"
-            )
+            connect = mc.connect(host="localhost", user="root", password="", database="oras_trial")
             cursor = connect.cursor()
 
             # Query to count bookings for each time slot on the selected date
-            query = """
-            SELECT time, COUNT(*) as booking_count
-            FROM user_input_forms
-            WHERE date = %s
-            GROUP BY time
-            """
+            query = "SELECT time, COUNT(*) as booking_count FROM user_input_forms WHERE date = %s GROUP BY time"
             cursor.execute(query, (selected_date,))
             results = cursor.fetchall()
 
-            # Create a set of fully booked times
+            # 3 times == fully booked
             booked_times = {row[0] for row in results if row[1] >= 3}
 
-            # Update the timePicker options
             available_times = [
                 time for time in self.timeOptions if time not in booked_times
             ]
             self.timePicker.config(values=available_times)
 
-            # Clear current selection if no longer valid
             if self.timePicker.get() not in available_times:
                 self.timePicker.set("")
 
@@ -190,26 +183,43 @@ class UserUI:
                 cursor.close()
                 connect.close()
 
-    def toggleOthersEntry(self, event):
-        """Enable or disable 'Others' entry based on the selected appointment type."""
-        if self.appTypeCheckBox.get() == "Others (Please Specify)":
-            self.othersLabel.config(state="normal")  # Enable label
-            self.othersEntry.config(state="normal")  # Enable entry
-        else:
-            self.othersEntry.delete("1.0", "end")  # Clear text if previously enabled
-            self.othersLabel.config(state="disabled")  # Disable entry
-            self.othersEntry.config(state="disabled")  # Disable entry
 
+    # Method to enable or disable 'Others' entry based on the selected appointment type
+    def toggleOthersEntry(self, event):
+        if self.appTypeCheckBox.get() == "Others (Please Specify)":
+            self.othersLabel.config(state="normal")
+            self.othersEntry.config(state="normal")
+        else:
+            self.othersEntry.delete("1.0", "end")
+            self.othersLabel.config(state="disabled")
+            self.othersEntry.config(state="disabled")
+
+
+    # Method for submitting data to the database
     def submitData(self):
         # Get values from the form
         student_number = self.studNumEntry.get()
         name = self.nameEntry.get()
         appointment_type = self.appTypeCheckBox.get()
         date = self.dateEntry.get()
-        course = self.courseEntry.get()
+        course = self.courseCheckBox.get()
         section = self.sectionEntry.get()
         others = self.othersEntry.get("1.0", "end").strip()  # Get multi-line text
         time = self.timePicker.get()
+
+        # Validate the input and every field should be filled out
+        if not (student_number.strip() and name.strip() and appointment_type.strip() and course.strip()
+                and section.strip() and time.strip()) or date.strip() == "yyyy-mm-dd":
+            messagebox.showerror("Error", "All fields except 'Others' are required!")
+            return
+
+        if len(student_number) != 7:
+            messagebox.showerror("Error", "Student number must be 7 characters long in the format XX-XXXX")
+            return
+
+        if student_number[2] != "-":
+            messagebox.showerror("Error", "The correct student number format should be XX-XXXX")
+            return
 
         if appointment_type == "Others (Please Specify)":
             if not others:
@@ -217,34 +227,21 @@ class UserUI:
                 return
             appointment_type = others
 
-        # Validate the input (example: check required fields)
-        if not (student_number.strip() and name.strip() and appointment_type.strip() and course.strip()
-                and section.strip() and time.strip()) or date.strip() == "yyyy-mm-dd":
-            messagebox.showerror("Error", "All fields except 'Others' are required!")
-            return
 
         # Connect to the MySQL database
         try:
-            connect = mc.connect(
-                host="localhost",
-                user="root",
-                password="",
-                database="oras_trial"
-            )
+            connect = mc.connect(host="localhost", user="root", password="", database="oras_trial")
             cursor = connect.cursor()
 
-            # SQL query to insert data
+            # SQL query to insert data (used """ for multiline strings)
             insert_query = """
             INSERT INTO user_input_forms(stud_num, name, course, section, appointment_type, date, time)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
             """
             values = (student_number, name, course, section, appointment_type, date, time)
             cursor.execute(insert_query, values)
-
-            # Commit the transaction
             connect.commit()
 
-            # Success message
             messagebox.showinfo("Success", "Data submitted successfully!")
 
             # Generate and display the QR code in a new window
@@ -260,6 +257,8 @@ class UserUI:
                 cursor.close()
                 connect.close()
 
+
+    # Method to generate QR Code
     def generateQRCode(self, student_number):
         # Generate QR code from the student number
         qr = qrcode.QRCode(
@@ -278,16 +277,17 @@ class UserUI:
         img_tk = ImageTk.PhotoImage(img)
 
         # Create a new window to display the QR code
-        qr_window = tk.Toplevel(self.userPage)  # New top-level window
+        qr_window = tk.Toplevel(self.root)
         qr_window.title("QR Code")
-        qr_window.geometry("300x300")  # Adjust the size as needed
+        qr_window.geometry("300x300")
 
         # Label to display the QR code image
         qr_label = tk.Label(qr_window, image=img_tk)
-        qr_label.image = img_tk  # Keep a reference to avoid garbage collection
+        qr_label.image = img_tk
         qr_label.pack(padx=20, pady=20)
 
 
+    # Method used to clear the form
     def clearForm(self):
         # Clear all form fields
         self.studNumEntry.delete(0, tk.END)
@@ -295,9 +295,19 @@ class UserUI:
         self.appTypeCheckBox.set("")
         self.dateEntry.delete(0, tk.END)
         self.dateEntry.insert(0, " yyyy-mm-dd")
-        self.courseEntry.delete(0, tk.END)
+        self.courseCheckBox.set("")
         self.sectionEntry.delete(0, tk.END)
         self.othersEntry.delete("1.0", "end")
         self.othersLabel.config(state="disabled")
         self.othersEntry.config(state="disabled")
         self.timePicker.set("")
+
+
+    # Method used to Log out
+    def logout(self):
+        confirm = messagebox.askyesno("Logout Confirmation", "Are you sure you want to log out?")
+
+        if confirm:
+            self.root.withdraw()
+            loginPage = loginSignup.LoginSignUp(self.root)
+            self.root.deiconify()

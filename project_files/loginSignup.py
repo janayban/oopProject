@@ -9,6 +9,7 @@ import style
 connection = mc.connect(host='localhost', database='oras_trial', user='root', password='')
 cursor = connection.cursor()
 
+
 class LoginSignUp:
     def __init__(self, root):
         self.root = root
@@ -20,14 +21,8 @@ class LoginSignUp:
         # Initialize login UI by default
         self.loginUI()
 
-    def clearWindow(self):
-        for widget in self.root.winfo_children():
-            widget.destroy()
 
-    def hashPassword(self, password):
-        # Hash the password using SHA-256 // [:16] stores only the first 16 characters
-        return hash.sha256(password.encode()).hexdigest()[:16]
-
+    # User Interface of Login
     def loginUI(self):
         self.clearWindow()
 
@@ -64,6 +59,8 @@ class LoginSignUp:
         loginButton.pack(pady=15, padx=20, ipadx=10)
         noAccountButton.pack()
 
+
+    # User Interface of Sign up
     def signupUI(self):
         self.clearWindow()
 
@@ -107,6 +104,8 @@ class LoginSignUp:
         signupButton.pack(pady=15, padx=20, ipadx=10)
         haveAccountButton.pack()
 
+
+    # Logic and conditions for Login
     def login(self):
         username = self.usernameLoginEntry.get()
         password = self.passwordLoginEntry.get()
@@ -122,16 +121,13 @@ class LoginSignUp:
             if result:
                 if username == "registrar":
                     messagebox.showinfo("Login Success", "Welcome, Admin!")
-                    self.clearWindow()
                     self.root.withdraw()
 
                     # Goes to Admin's UI
                     adminPage.AdminUI(self.root)
 
-
                 else:
                     messagebox.showinfo("Login Success", f"Welcome, {username}!")
-                    self.clearWindow()
                     self.root.withdraw()
 
                     # Goes to User's UI
@@ -142,6 +138,8 @@ class LoginSignUp:
         else:
             messagebox.showerror("Error", "Please enter both username and password.")
 
+
+    # Logic and conditions for Sign up
     def signup(self):
         username = self.usernameSignupEntry.get()
         password = self.passwordSignupEntry.get()
@@ -167,7 +165,7 @@ class LoginSignUp:
 
                         query = f"INSERT INTO accounts(username, password) VALUES ('{username}', '{hashedPassword}')"
                         cursor.execute(query)
-                        connect.commit()
+                        connection.commit()
 
                         messagebox.showinfo("Signup Success", "Account created successfully!")
                         self.loginUI()
@@ -175,3 +173,14 @@ class LoginSignUp:
                     messagebox.showerror("Error", "Password fields are required.")
         else:
             messagebox.showerror("Error", "Username is required.")
+
+
+    # Method for clearing widgets
+    def clearWindow(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
+
+
+    # Encrypting the password // [:16] stores only the first 16 characters
+    def hashPassword(self, password):
+        return hash.sha256(password.encode()).hexdigest()[:16]
